@@ -1,6 +1,8 @@
 package ir.mreonline.session06;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.os.Bundle;
@@ -26,6 +28,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        VehicleModel vehicle =new VehicleModel();
+
+        RecyclerView recycler =findViewById(R.id.recycler);
+        LinearLayoutManager manager =new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
+        recycler.setLayoutManager(manager);
+
+
         String url ="https://pouyaheydari.com/vehicles.json";
         AsyncHttpClient client =new AsyncHttpClient();
         client.get(url,new JsonHttpResponseHandler(){
@@ -34,8 +43,9 @@ public class MainActivity extends AppCompatActivity {
                 super.onSuccess(statusCode, headers, response);
                 Gson gson =new Gson();
                 VehicleModel vehicle = gson.fromJson(response.toString(),VehicleModel.class);
-                int strTest = vehicle.getVehicles().size();
-                Log.d("Testt", "onSuccess: "+strTest);
+                Log.d("myError", "onSuccess: "+vehicle.getVehicles().size());
+                RecyclerAdapter adapter = new RecyclerAdapter(vehicle);
+                recycler.setAdapter(adapter);
             }
 
             @Override
@@ -43,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         });
+
 
     }
 }
